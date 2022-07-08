@@ -11,43 +11,7 @@ const donorSchema = new mongoose.Schema({
 
     },
 
-    firstName: {
-
-        type: String,
-        required: true
-    },
-
-    lastName: {
-
-        type: String,
-        required: true
-    },
-
-    contactNumber: {
-
-        type: String,
-        required: true
-    },
-
-    email: {
-        type: String,
-        required: true,
-    },
-
-    addressLine: {
-
-        type: String,
-        required: true,
-    },
-
-    pincode: {
-
-        type: String,
-        required: true,
-        unique: true
-    },
-
-    gender: {
+   gender: {
 
         type: String,
         required: true,

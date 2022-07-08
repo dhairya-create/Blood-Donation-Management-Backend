@@ -6,7 +6,8 @@ const supervisorDetailsSchema = new mongoose.Schema({
 
         type: String,
         "$ref": programDrives,
-        required: true
+        required: true,
+        "unique": true
     },
 
     supervisorName: {

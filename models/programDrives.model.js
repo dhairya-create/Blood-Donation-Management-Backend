@@ -11,9 +11,8 @@ const programDrivesSchema = new mongoose.Schema({
 
     programName: {
 
-
         type: String,
-        required:true
+        required: true
     },
 
     programDate: {
@@ -31,8 +30,8 @@ const programDrivesSchema = new mongoose.Schema({
 
 },
 
-{
-    timestamps: true,
-});
+    {
+        timestamps: true,
+    });
 
 module.exports = mongoose.model("programDrive", programDrivesSchema);
