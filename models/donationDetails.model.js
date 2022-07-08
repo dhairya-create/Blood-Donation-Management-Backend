@@ -1,13 +1,25 @@
 const mongoose = require("mongoose");
 const programDrives = require('./programDrives.model');
+const bloodBottle = require('./bloodBottles.model')
 const donationDetailsSchema = new mongoose.Schema({
+
+
+
+    bloodBottleId: {
+
+        type:String,
+        "$ref": bloodBottle,
+        unique: true,
+        required: true
+
+    },
 
     aadharNumber: {
 
         type: String,
         unique: true,
         required: true,
-        
+
 
     },
 
@@ -22,16 +34,22 @@ const donationDetailsSchema = new mongoose.Schema({
         type: String,
         unique: true,
         "$ref": programDrives,
+        required: false
+
+    },
+
+    username: {
+        type: String,
         required: true
 
     }
 
 },
 
-{
-    timestamps: true,
-});
+    {
+        timestamps: true,
+    });
 
 module.exports = mongoose.model("donationDetails", donationDetailsSchema);
- 
+
 

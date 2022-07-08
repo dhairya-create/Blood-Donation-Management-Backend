@@ -1,45 +1,21 @@
 const mongoose = require("mongoose");
 const address = require('./address.model');
-const transaction = require('./transaction.model');
+const username = require('./user.model');
 const recipientSchema = new mongoose.Schema({
 
+
+    username: {
+
+        type: String,
+        "$ref": username
+
+    },
     recipientId: {
 
         type: String,
         unique: true,
         required: true
 
-    },
-
-    name: {
-
-        type: String,
-        required:true
-
-    },
-
-    contactNumber: {
-
-        type: String,
-        required: true
-    },
-
-    addressLine: {
-
-        type: String,
-        required: true,
-    },
-
-    pincode: {
-
-        type: String,
-        required: true,
-        "$ref": address
-    },
-
-    email: {
-        type: String,
-        required: true,
     },
 
     bloodGroup: {
@@ -67,13 +43,7 @@ const recipientSchema = new mongoose.Schema({
         required: true
     },
 
-    transactionID: {
 
-        type: String,
-        required: true,
-        "$ref": transaction
-
-    },
 
     isAccepted: {
 
@@ -81,7 +51,7 @@ const recipientSchema = new mongoose.Schema({
         required: true
     },
 
-   
+
 
 
 
@@ -90,8 +60,8 @@ const recipientSchema = new mongoose.Schema({
 
 },
 
-{
-    timestamps: true,
-});
+    {
+        timestamps: true,
+    });
 
 module.exports = mongoose.model("recipient", recipientSchema)

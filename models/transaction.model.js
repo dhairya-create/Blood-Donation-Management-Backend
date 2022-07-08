@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const recipient = require("./recipient.model")
 const transactionSchema = new mongoose.Schema({
 
     transactionID: {
@@ -8,6 +9,7 @@ const transactionSchema = new mongoose.Schema({
         unique:true
 
     },
+    
 
     bloodBankID: {
 
@@ -27,6 +29,14 @@ const transactionSchema = new mongoose.Schema({
     amount: {
         type:String,
         required:true
+    },
+
+    recipientId: {
+
+        type:String,
+        required:true,
+        "$ref": recipient
+
     }
 
 },
