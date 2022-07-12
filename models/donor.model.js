@@ -1,17 +1,21 @@
 const mongoose = require("mongoose");
-const donationDetails = require('./donationDetails.model')
+const user = require('./user.model');
 const donorSchema = new mongoose.Schema({
 
     aadharNumber: {
 
         type: String,
         unique: true,
-        required: true,
-        "$ref": donationDetails
-
+        required: false,
     },
+    username:{
 
-   gender: {
+        type: String,
+        required: true,
+        unique: true,
+        "$ref": user
+    },
+    gender: {
 
         type: String,
         required: true,
@@ -25,18 +29,17 @@ const donorSchema = new mongoose.Schema({
 
     dateOfBirth: {
 
-        type: new Date(),
+        type: Date,
         required: true
     },
 
     medicalReports: {
 
         type: String,
-        required: true,
+        required: false,
 
     },
 },
-
     {
         timestamps: true,
     });

@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const prerequisitesSchema = new mongoose.Schema({
 
-   
-
     stockName: {
 
         type: String,

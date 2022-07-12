@@ -3,21 +3,6 @@ const bloodBank = require('./bloodbankDetails.model')
 const recipient = require('./recipient.model')
 const bloodBottlesSchema = new mongoose.Schema({
 
-    bloodBottleId:{
-
-        type:String,
-        required: true,
-        unique:true
-
-    },
-
-    bloodBankID: {
-        type:String,
-        required: true,
-        unique:true,
-        "$ref": bloodBank
-    },
-
     bloodGroup: {
         type:String,
         required: true
@@ -25,23 +10,15 @@ const bloodBottlesSchema = new mongoose.Schema({
 
     isExpired: {
         type: Boolean,
-        required:true
+        default:false
     },
 
     recipientId: {
-
         type: String,
-        unique: true,
-        required: true,
+        required: false,
+        default: null,
         "$ref": recipient
-
     },
-
-    
-
-   
-
-
 
 },
 
