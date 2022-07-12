@@ -1,14 +1,6 @@
 const mongoose = require("mongoose");
 const programDrivesSchema = new mongoose.Schema({
 
-    programID: {
-
-        type: String,
-        unique: true,
-        required: true
-
-    },
-
     programName: {
 
         type: String,
@@ -17,7 +9,8 @@ const programDrivesSchema = new mongoose.Schema({
 
     programDate: {
 
-        type: new Date()
+        type: Date,
+        required: true
     },
 
     contactNumber: {
@@ -25,8 +18,6 @@ const programDrivesSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-
-
 
 },
 

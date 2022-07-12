@@ -3,21 +3,11 @@ const address = require('./address.model');
 const username = require('./user.model');
 const recipientSchema = new mongoose.Schema({
 
-
     username: {
 
         type: String,
         "$ref": username
-
     },
-    recipientId: {
-
-        type: String,
-        unique: true,
-        required: true
-
-    },
-
     bloodGroup: {
 
         type: String,
@@ -26,7 +16,7 @@ const recipientSchema = new mongoose.Schema({
 
     requestedDate: {
 
-        type: new Date(),
+        type: Date,
         required: true
     },
 
@@ -39,25 +29,16 @@ const recipientSchema = new mongoose.Schema({
 
     supplyDate: {
 
-        type: new Date(),
+        type: Date,
         required: true
     },
-
-
 
     isAccepted: {
 
         type: Boolean,
+        default:false,
         required: true
     },
-
-
-
-
-
-
-
-
 },
 
     {
