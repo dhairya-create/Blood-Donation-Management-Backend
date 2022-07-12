@@ -26,12 +26,6 @@ const userSchema = new mongoose.Schema({
         required: true
     },
 
-    pincode: {
-
-        type: String,
-        required: true
-
-    },
 
     addressLine: {
 
