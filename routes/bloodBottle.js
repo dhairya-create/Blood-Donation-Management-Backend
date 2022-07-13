@@ -18,4 +18,13 @@ router.route('/all').get((req, res) => {
     .catch((err) => {console.log(err)})
 });
 
+router.route('/blood-find').post((req,res)=>{
+    bloodBottle.find({"bloodGroup":req.body.blood})
+    .then((result) => {
+        console.log(result);
+        res.json(result);
+    })
+    .catch((err) => {console.log(err)})
+});
+
 module.exports = router;
