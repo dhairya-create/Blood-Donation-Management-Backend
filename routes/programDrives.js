@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const programDrives =  require('../models/programDrives.model');
+const supervisor = require('../models/supervisorDetails.model');
 const mongoose = require('mongoose');
 
 
