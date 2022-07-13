@@ -18,4 +18,15 @@ router.route('/all').get((req, res) => {
     .catch((err) => {console.log(err)})
 });
 
+router.route('/stock-find').post((req,res)=>{
+    const name = `${req.body.name}.*`;
+    console.log("Name="+name);
+    prerequesites.find({"stockName":{$regex: name, $options:"i"}})
+    .then((result) => {
+        console.log(result);
+        res.json(result);
+    })
+    .catch((err) => {console.log(err)})
+});
+
 module.exports = router;

@@ -10,9 +10,11 @@ router.route('/add').post((req,res)=>{
         .catch(err => res.status(400).json("error:"+err));
 });
 
-router.route('/all').get((req, res) => {
-    supervisorDetails.find()
+router.route('/all').post((req, res) => { 
+    //console.log(req.params.contactNumber);
+    supervisorDetails.findOne({contactNumber:req.body.contactNumber})
     .then((result) => {
+        console.log(result);
         res.json(result);
     })
     .catch((err) => {console.log(err)})
