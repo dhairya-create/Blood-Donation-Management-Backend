@@ -40,9 +40,13 @@ router.route('/donor-all').get((req, res) => {
 
 //donation routes
 router.route('/donation-add').post((req,res)=>{
-    const newDonation = new donationDetails(req.body);
+    console.log("called");
+
+    const newDonation = new donationDetails({username:req.body.username,date:req.body.appointmentDate});
     newDonation.save()
-        .then(() => res.json("Donation Details added"))
+        .then(() => {
+            console.log("added");
+        })
         .catch(err => res.status(400).json("error:"+err));
 });
 
