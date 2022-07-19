@@ -22,7 +22,7 @@ router.route('/all').get((req, res) => {
 router.route('/revenue').get((req, res) => {
     const curr_year = new Date().getFullYear();
     transaction.aggregate([{
-        $group: { _id: { year: { $year: "$transactionDate" } }, total: { $sum: "$amount" } }
+        $group: { _id: { year: { $year: "$transactionDate",  } }, total: { $sum: "$amount" } }
     }])
         .then((result) => {
             console.log(result);

@@ -3,7 +3,6 @@ const userDetails = require('../models/user.model');
 const donorDetails = require('../models/donor.model');
 const donationDetails = require('../models/donationDetails.model')
 const recipientDetails = require('../models/recipient.model')
-const transaction = require('../models/transaction.model');
 const mongoose = require('mongoose');
 
 
@@ -65,8 +64,6 @@ router.route('/total-donations').get((req, res) => {
             res.json(size.length);
         })
 })
-
-
 
 router.route('/donation-all').get((req, res) => {
     donationDetails.find()
