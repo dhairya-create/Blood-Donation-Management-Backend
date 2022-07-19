@@ -1,13 +1,14 @@
 const mongoose = require('mongoose')
+const user = require('./user.model');
 const Schema = mongoose.Schema
 
 const walletSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
+    username:{
 
-        ref:"users",
-
-        required: true
+        type: String,
+        required: true,
+        unique: true,
+        "$ref": user
     },
     amount: {
         type: Number,
