@@ -5,6 +5,40 @@ const donationDetails = require('../models/donationDetails.model')
 const recipientDetails = require('../models/recipient.model')
 const mongoose = require('mongoose');
 
+//jenish
+const Token = require('../models/token.model');
+const crypto = require("crypto");
+const mail = require('nodemailer');
+require("dotenv/config")
+const wallet=require('../models/wallet.model')
+
+//bcrypt
+const bcrypt=require('bcryptjs')
+
+//responses
+const responses=require("../utils/responses")
+
+//validations
+const validation=require('../validations/register.validation');
+const { json } = require('express');
+
+
+let transporter = mail.createTransport({
+    service: "gmail",
+    port:587,
+    auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.EMAIL_PASS
+    }
+  })
+  
+  transporter.verify((err, success) => {
+    if(err)
+    {
+        console.log(err);
+    }
+  })
+
 
 //user routes
 router.route('/add').post((req,res)=>{
@@ -126,6 +160,111 @@ router.route('/recipient-find').post((req,res)=>{
     })
     .catch((err) => {console.log(err)})
 });
+
+//jenish
+router.route('/register').post(async (req, res) => {
+    try {
+        let validate = await validation(req.body);
+        console.log(req.body.contactNumber);
+        if (validate.error) {
+          return responses.badRequestResponse(
+            res,
+            validate.error.details[0].message
+          );
+        }
+        console.log(req.body.name);
+        let user =await userDetails.findOne({
+                userName:req.body.userName
+        })
+        console.log(req.body.address);
+        if (user) {
+          return responses.badRequestResponse(res, { err: "User Already exists." })
+        }
+        console.log(req.body.name);
+        const salt = await bcrypt.genSalt(10);
+        const hash_password = await bcrypt.hash(req.body.password, salt);
+        req.body.password = hash_password;
+        console.log(req.body.password);
+
+        let new_user = await userDetails.create(req.body)
+        if (!new_user) {
+            console.log("Hello");
+          return responses.serverErrorResponse(res, "Error while creating user.")
+        }
+        
+        
+        console.log("user---"+new_user);
+        const userName = new_user.userName;
+        const token = await Token.findOne({ userName: new_user.userName });
+        if (token) {
+              await token.deleteOne()
+        };
+        let resetToken = crypto.randomBytes(32).toString("hex");
+        console.log(resetToken);
+        await new Token({
+          userName: userName,
+          token: resetToken,
+          createdAt: Date.now(),
+        }).save();
+
+        const link = `https://localhost:4000/user/verify-account/${resetToken}/${userName}`;
+
+
+        const mailOptions = {
+          from: process.env.EMAIL_ID,
+          to: new_user.email,
+          subject: "Blood Donation Project - Verify Email To Continue",
+          html: `
+          <body>
+          <h1>Verify Your Email </h1>
+          <hr>
+          <h3>Important: This link will be valid for only 1 Hour! </h3>
+          <p> Click <a href=${link}>here</a> to verify your account. </p>
+          <hr>
+          <p>Regards,</p>
+          <p>Team Blood Bank Project </p>
+          </body>
+          `
+        }
+        transporter.sendMail(mailOptions).then(res=>{
+          console.log("mail sent"+res)
+        })
+          .catch((err) => {
+              console.log(err);
+          });
+          console.log("hello");
+        return responses.successfullyCreatedResponse(res, new_user)
+
+      } catch (error) {
+        return responses.serverErrorResponse(res)
+      }
+});
+
+router.route('/verify-account/:token/:userName').get( async (req, res) => {
+    const token = await Token.findOne({ token : req.params.token })
+    if(token)
+    {
+        const user = await userDetails.findOne({ userName : req.params.userName })
+        if(user)
+        {
+            const update = await userDetails.updateOne({ userName : req.params.userName }, {isVerified : true})
+            if(update)
+            {
+                // const wallet1=await (await wallet).create;
+                // wallet1.userId=(req.params.userid);
+                // wallet1.amount=0;
+                const wallet1=new wallet({"userName":req.params.userName,"amount":0 })
+                wallet1.save()
+               .then((result) => {
+                   res.json("Wallet Added")
+                })
+            }
+            else{
+              res.json("error verifying account")
+            }
+        }
+    }
+  })
 
 router
 
