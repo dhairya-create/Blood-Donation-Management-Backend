@@ -55,25 +55,27 @@ router.route('/all').get((req, res) => {
         .catch((err) => { console.log(err) })
 });
 
-router.route('/delete/:username').delete((req, res) => {
-    console.log("Username=" + req.params.username);
-    userDetails.deleteOne({ username: req.params.username })
-        .then((result) => {
-            console.log(result);
-        })
-        .catch((err) => { console.log(err) })
-});
-
 router.route('/user-find').post((req, res) => {
     const name = `${req.body.name}.*`;
     console.log("Name=" + name);
-    userDetails.find({ "username": { $regex: name, $options: "i" } })
+    userDetails.find({ "userName": { $regex: name, $options: "i" } })
         .then((result) => {
             console.log(result);
             res.json(result);
         })
         .catch((err) => { console.log(err) })
 });
+
+router.route('/change-status/:name/:check').put((req, res) => {
+    let checked;
+    console.log(req.params.check);
+    userDetails.updateOne({userName : req.params.name}, {isActive:req.params.check})
+    .then((result) => {
+        console.log(result);
+        res.json(result)
+    })
+    .catch((err) => { console.log(err) })
+})
 
 //donor routes
 router.route('/donor-add').post((req, res) => {
