@@ -20,18 +20,31 @@ router.route('/all').get((req, res) => {
 
 //get total revenue for current year
 router.route('/revenue').get((req, res) => {
+    const arr = [];
     const curr_year = new Date().getFullYear();
     transaction.aggregate([{
-        $group: { _id: { year: { $year: "$transactionDate",  } }, total: { $sum: "$amount" } }
+        $group: { _id: { year: { $year: "$transactionDate" }, month:{ $month:"$transactionDate"} }, total: { $sum: "$amount" } }
     }])
         .then((result) => {
             console.log(result);
-
-            result.forEach(obj => {
-                if (obj._id.year == curr_year) {
-                    res.json(obj.total);
+            result.forEach(obj=>{
+                if(obj._id.year == curr_year){
+                    arr[obj._id.month] = obj.total;
                 }
             })
+            for(let i=1;i<=12;i++){
+                if(!arr[i])
+                {
+                    arr[i] = 0;
+                }
+                console.log(arr[i]);
+            }
+            res.json(arr);
+            // result.forEach(obj => {
+            //     if (obj._id.year == curr_year) {
+            //         res.json(obj.total);
+            //     }
+            // })
 
         })
         .catch((err) => {
