@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const programDrives =  require('../models/programDrives.model');
+const supervisor = require('../models/supervisorDetails.model');
 const mongoose = require('mongoose');
 
 
@@ -13,6 +14,17 @@ router.route('/add').post((req,res)=>{
 router.route('/all').get((req, res) => {
     programDrives.find()
     .then((result) => {
+        res.json(result);
+    })
+    .catch((err) => {console.log(err)})
+});
+
+router.route('/program-find').post((req,res)=>{
+    const name = `${req.body.name}.*`;
+    console.log("Name="+name);
+    programDrives.find({"programName":{$regex: name, $options:"i"}})
+    .then((result) => {
+        console.log(result);
         res.json(result);
     })
     .catch((err) => {console.log(err)})
