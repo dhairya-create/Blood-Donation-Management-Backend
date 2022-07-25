@@ -3,6 +3,7 @@ const userDetails = require('../models/user.model');
 const donorDetails = require('../models/donor.model');
 const donationDetails = require('../models/donationDetails.model')
 const recipientDetails = require('../models/recipient.model')
+const bottle = require('../models/bloodBottles.model');
 const mongoose = require('mongoose');
 
 //jenish
@@ -180,6 +181,112 @@ router.route('/recipient-find').post((req, res) => {
         })
         .catch((err) => { console.log(err) })
 });
+
+router.route('/reject/:id').get((req, res) => {
+    recipientDetails.findOne({_id:req.params.id})
+        .then((result) => {
+            console.log(result.username)
+            userDetails.findOne({ userName: result.username})
+            .then((name) => {
+                console.log(name.email);
+                const mailOptions = {
+                    from: process.env.EMAIL_ID,
+                    to: name.email,
+                    subject: "Blood Donation Project - Blood Bottle request Status",
+                    html: `
+                  <body>
+                  <h1>Rejected</h1>
+                  <hr>
+                  <h3>Your request is rejected due to shortage of blood bottles. </h3>
+                  <hr>
+                  <p>Regards,</p>
+                  <p>Team Blood Bank Project </p>
+                  </body>
+                  `
+                }
+                transporter.sendMail(mailOptions).then(res1 => {
+                    console.log("mail sent" + res1)
+                    recipientDetails.deleteOne({_id:req.params.id})
+                    .then((resDel)=>{
+                        console.log(resDel);
+                        console.log("Deleted successfully");
+                        recipientDetails.find()
+                        .then((result) => {
+                            res.json(result);
+                        })
+                        .catch((err) => { console.log(err) })
+                    })
+                })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+            })
+            .catch((err) => { console.log(err) })
+        })
+        .catch((err) => { console.log(err) })
+});
+
+router.route('/accept/:id').get((req, res) => {
+    recipientDetails.findOne({_id:req.params.id})
+        .then((result) => {
+            console.log(result.bloodGroup+"="+result.quantity);
+            bottle.find({"bloodGroup":result.bloodGroup,"isExpired":false,"recipientId":null}).count()
+            .then((cnt)=>{
+                console.log(cnt);
+                if(result.quantity>cnt)
+                    res.json({err:"Not in stock"});
+                else
+                {
+                    bottle.find({"bloodGroup":result.bloodGroup,"isExpired":false,"recipientId":null}).limit(result.quantity)
+                    .then((mark)=>{
+                        mark.forEach(obj=>{
+                            bottle.updateOne({_id:obj._id},{recipientId:req.params.id})
+                            .then((updte)=>{
+                                console.log("updated");
+                            })
+                        });
+                        userDetails.findOne({ userName: result.username})
+                        .then((name) => {
+                            console.log(name.email);
+                            const mailOptions = {
+                                from: process.env.EMAIL_ID,
+                                to: name.email,
+                                subject: "Blood Donation Project - Blood Bottle request Status",
+                                html: `
+                              <body>
+                              <h1>Accepted</h1>
+                              <hr>
+                              <h3>Your blood bottle request is accepted. </h3>
+                              <hr>
+                              <p>Regards,</p>
+                              <p>Team Blood Bank Project </p>
+                              </body>
+                              `
+                            }
+                            transporter.sendMail(mailOptions).then(res1 => {
+                                console.log("mail sent" + res1)
+                                recipientDetails.updateOne({_id:req.params.id},{isAccepted:true})
+                                .then((row)=>{
+                                    recipientDetails.find()
+                                    .then((result) => {
+                                        res.json(result);
+                                    })
+                                    .catch((err) => { console.log(err) })
+                                })
+                            })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
+                        })
+                        .catch((err) => { console.log(err) })
+                    })
+                }
+            })
+            
+        })
+        .catch((err) => { console.log(err) })
+});
+
 
 //jenish
 router.route('/register').post(async (req, res) => {
