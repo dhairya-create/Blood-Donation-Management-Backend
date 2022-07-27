@@ -107,7 +107,7 @@ router.route('/donor-all').get((req, res) => {
 
 //donation routes
 router.route('/donation-add').post((req, res) => {
-    console.log("called");
+   
 
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
