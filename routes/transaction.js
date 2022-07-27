@@ -40,11 +40,6 @@ router.route('/revenue').get((req, res) => {
                 console.log(arr[i]);
             }
             res.json(arr);
-            // result.forEach(obj => {
-            //     if (obj._id.year == curr_year) {
-            //         res.json(obj.total);
-            //     }
-            // })
 
         })
         .catch((err) => {

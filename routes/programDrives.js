@@ -30,4 +30,13 @@ router.route('/program-find').post((req,res)=>{
     .catch((err) => {console.log(err)})
 });
 
+router.route('/latest-drive').get((req, res) => {
+    programDrives.find().sort({programDate:-1}).limit(1)
+    .then((result) => {
+        console.log(result[0]);
+        res.json(result[0]);
+    })
+    .catch((err) => {console.log(err)})
+});
+
 module.exports = router;
