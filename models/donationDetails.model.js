@@ -32,6 +32,10 @@ const donationDetailsSchema = new mongoose.Schema({
         "$ref": programDrives,
     },
 
+    hasDonated:{
+        type:Boolean,
+        default:false,
+    }
 },
 
     {
