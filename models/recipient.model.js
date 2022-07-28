@@ -22,7 +22,7 @@ const recipientSchema = new mongoose.Schema({
 
     quantity: {
 
-        type: String,
+        type: Number,
         required: true,
 
     },

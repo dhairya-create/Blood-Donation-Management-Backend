@@ -57,6 +57,9 @@ app.use('/transaction',transaction);
 const address = require('./routes/address');
 app.use('/address',address);
 
+const appointment = require('./routes/appointment')
+app.use('/appointment',appointment);
+
 app.listen(port,()=>{
     console.log(`Server is running on port:${port}`);
 });

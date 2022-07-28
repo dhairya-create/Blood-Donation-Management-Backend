@@ -70,12 +70,12 @@ router.route('/user-find').post((req, res) => {
 router.route('/change-status/:name/:check').put((req, res) => {
     let checked;
     console.log(req.params.check);
-    userDetails.updateOne({userName : req.params.name}, {isActive:req.params.check})
-    .then((result) => {
-        console.log(result);
-        res.json(result)
-    })
-    .catch((err) => { console.log(err) })
+    userDetails.updateOne({ userName: req.params.name }, { isActive: req.params.check })
+        .then((result) => {
+            console.log(result);
+            res.json(result)
+        })
+        .catch((err) => { console.log(err) })
 })
 
 //donor routes
@@ -107,7 +107,7 @@ router.route('/donor-all').get((req, res) => {
 
 //donation routes
 router.route('/donation-add').post((req, res) => {
-    console.log("called");
+   
 
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
@@ -135,6 +135,38 @@ router.route('/total-donations').get((req, res) => {
             res.json(size.length);
         })
 });
+
+router.route('/monthly-donations').get((req, res) => {
+    const arr = [];
+    const curr_year = new Date().getFullYear();
+    donationDetails.aggregate([
+        {
+            $match:
+            {
+                'hasDonated': true,
+            }
+        },
+        { $group: { _id: { year: { $year: "$date" }, month: { $month: "$date" } }, total: { $sum: "$amount" } } }
+    ])
+        .then((result) => {
+            console.log(result);
+            result.forEach(obj => {
+                if (obj._id.year == curr_year) {
+                    arr[obj._id.month] = obj.total;
+                }
+            })
+            for (let i = 1; i <= 12; i++) {
+                if (!arr[i]) {
+                    arr[i] = 0;
+                }
+                console.log(arr[i]);
+            }
+            //res.json(arr);
+        })
+        .catch((err) => {
+            console.log("error " + err)
+        })
+})
 
 router.route('/donation-all').get((req, res) => {
     donationDetails.find()
