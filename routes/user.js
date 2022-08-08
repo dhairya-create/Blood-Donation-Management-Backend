@@ -22,6 +22,7 @@ const responses = require("../utils/responses")
 //validations
 const validation = require('../validations/register.validation');
 const { json } = require('express');
+const { log } = require('console');
 
 
 let transporter = mail.createTransport({
@@ -107,7 +108,7 @@ router.route('/donor-all').get((req, res) => {
 
 //donation routes
 router.route('/donation-add').post((req, res) => {
-    console.log("called");
+   
 
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
@@ -422,6 +423,28 @@ router.route('/verify-account/:token/:userName').get(async (req, res) => {
     }
 })
 
-router
+router.route('/updateUser/:username').put(async function(req,res){
+    console.log(req.body.confirmPassword)
+    if(req.body.confirmPassword){
+
+      const salt = await bcrypt.genSalt(10);
+      const hash_password = await bcrypt.hash(req.body.confirmPassword, salt);
+      req.body.confirmPassword = hash_password;
+    }
+
+     userDetails.findOne({userName:req.params.username})
+    .then((name)=>{
+
+        console.log(name);
+        userDetails.updateOne({_id:name._id},{password:req.body.confirmPassword})
+    
+        .then(user=>res.json(user))
+        .catch(err=>res.status(400).json('Error' + err));
+       
+
+    } )
+   
+   
+})
 
 module.exports = router;
