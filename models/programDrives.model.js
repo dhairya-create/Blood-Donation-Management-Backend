@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const username = require('./user.model');
 const programDrivesSchema = new mongoose.Schema({
 
     programName: {
@@ -17,6 +18,18 @@ const programDrivesSchema = new mongoose.Schema({
 
         type: String,
         required: true
+    },
+
+    username: {
+
+        type: String,
+        "$ref": username
+    },
+
+    isAccepted: {
+
+        type: Boolean,
+        default:false,
     }
 
 },
