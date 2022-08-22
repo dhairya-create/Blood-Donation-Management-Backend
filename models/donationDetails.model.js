@@ -14,8 +14,8 @@ const donationDetailsSchema = new mongoose.Schema({
     bloodBottleId: {
 
         type:String,
-        "$ref": bloodBottle,
-        unique: true,
+        ref: bloodBottle,
+        // unique: true,
         required: false
 
     },

@@ -5,10 +5,14 @@ var rn = require('random-number');
 
 let transporter = mail.createTransport({
     service: "gmail",
-    port: 587,
+    secureConnection: true,
+    port: 466,
     auth: {
         user: process.env.EMAIL_ID,
         pass: process.env.EMAIL_PASS
+    },
+    tls:{
+        secureProtocol: "TLSv1_method"
     }
 })
 
@@ -47,7 +51,7 @@ router.route('/checkmail').post((req, res) => {
                         res.json(otp)
                     })
                         .catch((err) => {
-                            console.log(err);
+                            console.log(`Error occured during mail ${err}`);
                         });
                 })
                 .catch((err) => { console.log(err) })

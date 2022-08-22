@@ -109,7 +109,7 @@ router.route('/donor-all').get((req, res) => {
 //donation routes
 router.route('/donation-add').post((req, res) => {
    
-
+    console.log(req.body.appointmentDate);
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
         .then(() => {
@@ -445,9 +445,11 @@ router.route('/verify-account/:token/:userName').get(async (req, res) => {
 })
 
 router.route('/updateUser/:username').put(async function(req,res){
-    console.log(req.body.confirmPassword)
+    console.log("password"+ req.body.confirmPassword)
+    console.log("username" + req.params.username);
     if(req.body.confirmPassword){
 
+      console.log(req.body.confirmPassword);
       const salt = await bcrypt.genSalt(10);
       const hash_password = await bcrypt.hash(req.body.confirmPassword, salt);
       req.body.confirmPassword = hash_password;
@@ -455,15 +457,16 @@ router.route('/updateUser/:username').put(async function(req,res){
 
      userDetails.findOne({userName:req.params.username})
     .then((name)=>{
-
-        console.log(name);
+        console.log("Data "+name);    
         userDetails.updateOne({_id:name._id},{password:req.body.confirmPassword})
-    
-        .then(user=>res.json(user))
+        .then((user)=>{
+            console.log(user);
+            res.json(user)})
         .catch(err=>res.status(400).json('Error' + err));
-       
-
-    } )
+    })
+    .catch((err)=>{
+        console.log(err);
+    })
    
    
 })
