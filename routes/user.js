@@ -206,8 +206,8 @@ router.route('/register').post(async (req, res) => {
           token: resetToken,
           createdAt: Date.now(),
         }).save();
-
-        const link = `https://localhost:4000/user/verify-account/${resetToken}/${userName}`;
+        console.log("hello");
+        const link = `http://localhost:3000/user/verify-account/${resetToken}/${userName}`;
 
 
         const mailOptions = {
@@ -238,6 +238,15 @@ router.route('/register').post(async (req, res) => {
       } catch (error) {
         return responses.serverErrorResponse(res)
       }
+});
+
+router.route('/d_register').post(async (req, res) => {
+    console.log("Hello");
+    const newUser = new donorDetails(req.body);
+    newUser.save()
+        .then(() => res.json("Donor added"))
+        .catch(err => res.status(400).json("error:"+err));
+    
 });
 
 router.route('/verify-account/:token/:userName').get( async (req, res) => {
