@@ -3,7 +3,7 @@ const user = require('./user.model');
 const Schema = mongoose.Schema
 
 const walletSchema = new Schema({
-    username:{
+    userName:{
 
         type: String,
         required: true,
