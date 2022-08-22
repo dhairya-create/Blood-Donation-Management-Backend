@@ -400,7 +400,7 @@ router.route('/register').post(async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
+
 router.route('/d_register').post(async (req, res) => {
     console.log("Hello");
     const newUser = new donorDetails(req.body);
@@ -410,17 +410,16 @@ router.route('/d_register').post(async (req, res) => {
     
 });
 
-router.route('/verify-account/:token/:userName').get( async (req, res) => {
-    const token = await Token.findOne({ token : req.params.token })
-    if(token)
-    {
-        const user = await userDetails.findOne({ userName : req.params.userName })
-        if(user)
-        {
-            const update = await userDetails.updateOne({ userName : req.params.userName }, {isVerified : true})
-            if(update)
-            {
-=======
+// router.route('/verify-account/:token/:userName').get( async (req, res) => {
+//     const token = await Token.findOne({ token : req.params.token })
+//     if(token)
+//     {
+//         const user = await userDetails.findOne({ userName : req.params.userName })
+//         if(user)
+//         {
+//             const update = await userDetails.updateOne({ userName : req.params.userName }, {isVerified : true})
+//             if(update)
+//             {
 router.route('/verify-account/:token/:userName').get(async (req, res) => {
     const token = await Token.findOne({ token: req.params.token })
     if (token) {
@@ -428,7 +427,7 @@ router.route('/verify-account/:token/:userName').get(async (req, res) => {
         if (user) {
             const update = await userDetails.updateOne({ userName: req.params.userName }, { isVerified: true })
             if (update) {
->>>>>>> e41c4267bfc6f9bf3367e8ddb43eafcd124a2d27
+
                 // const wallet1=await (await wallet).create;
                 // wallet1.userId=(req.params.userid);
                 // wallet1.amount=0;
