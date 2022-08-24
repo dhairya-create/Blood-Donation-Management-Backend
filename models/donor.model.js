@@ -31,14 +31,7 @@ const donorSchema = new mongoose.Schema({
 
         type: Date,
         required: true
-    },
-
-    medicalReports: {
-
-        type: String,
-        required: false,
-
-    },
+    }
 },
     {
         timestamps: true,

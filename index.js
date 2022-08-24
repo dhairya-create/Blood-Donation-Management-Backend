@@ -42,6 +42,9 @@ app.use('/supervisor',supervisor);
 const user = require('./routes/user');
 app.use('/user',user);
 
+const wallet = require('./routes/wallet');
+app.use('/wallet',wallet);
+
 const bloodBottle = require('./routes/bloodBottle');
 app.use('/bloodBottle',bloodBottle);
 
@@ -59,6 +62,8 @@ app.use('/address',address);
 
 const appointment = require('./routes/appointment')
 app.use('/appointment',appointment);
+
+
 
 app.listen(port,()=>{
     console.log(`Server is running on port:${port}`);
