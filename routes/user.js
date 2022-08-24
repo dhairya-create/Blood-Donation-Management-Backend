@@ -137,6 +137,15 @@ router.route('/donor-find').post((req, res) => {
         .catch((err) => { console.log(err) })
 });
 
+router.route('/find').post((req, res) => {
+    donorDetails.findOne({ "username": req.body.username})
+        .then((result) => {
+            console.log(result);
+            res.json(result);
+        })
+        .catch((err) => { console.log(err) })
+});
+
 router.route('/donor-all').get((req, res) => {
     donorDetails.find()
         .then((result) => {
@@ -157,6 +166,13 @@ router.route('/donation-add').post((req, res) => {
         .catch(err => res.status(400).json("error:" + err));
 });
 
+router.route('/donated/:id').put((req,res)=>{
+    donationDetails.updateOne({_id:req.params.id},{bloodBottleId:req.body.bottleId,hasDonated:true})
+    .then((updte)=>{
+        res.json(updte);
+    })
+})
+
 //total donations in current year
 router.route('/total-donations').get((req, res) => {
     const curr_year = new Date().getFullYear();
@@ -168,7 +184,7 @@ router.route('/total-donations').get((req, res) => {
                 },
                 curr_year
             ]
-        }
+        },hasDonated:true,
     })
         .then((result) => {
             var size = Object.keys(result);

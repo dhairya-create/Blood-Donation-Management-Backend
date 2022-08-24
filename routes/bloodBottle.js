@@ -6,9 +6,10 @@ const mongoose = require('mongoose');
 
 
 router.route('/add').post((req,res)=>{
+    console.log("ADD");
     const newBB = new bloodBottle(req.body);
     newBB.save()
-        .then(() => res.json("Bottle added"))
+        .then((bottle) => res.json(bottle))
         .catch(err => res.status(400).json("error:"+err));
 });
 
