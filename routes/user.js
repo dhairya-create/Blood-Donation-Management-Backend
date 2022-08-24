@@ -4,6 +4,7 @@ const donorDetails = require('../models/donor.model');
 const donationDetails = require('../models/donationDetails.model')
 const recipientDetails = require('../models/recipient.model')
 const bottle = require('../models/bloodBottles.model');
+const jwt =  require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 //jenish
@@ -77,6 +78,40 @@ router.route('/change-status/:name/:check').put((req, res) => {
             res.json(result)
         })
         .catch((err) => { console.log(err) })
+})
+
+
+router.route('/login').post((req,res)=> {
+    if(!req.body.userName || !req.body.password){
+        return res.status(400).send('Bad Request');
+    }
+    userDetails.findOne({userName: req.body.userName})
+    .then((user)=>{
+        bcrypt.compare(req.body.password,user.password)
+        .then((result)=>{
+            const token = jwt.sign({username:user.username},process.env.SECRET_KEY,{
+                expiresIn:86400
+            })
+
+            user.token = token;            
+            userDetails.updateOne({userName:user.userName},{token:token})
+            .then((result)=>{
+                console.log("token added "+result);
+                return res.status(200).send({token:token,message:"Login Sucessful"})
+            })
+            .catch((err)=>{
+                return res.status(403).send(err);
+            })
+
+        })
+        .catch((err)=>{
+            return res.status(404).send('Incorrect Password');
+        })
+    })
+    .catch((err)=>{
+        console.log(err);
+        return res.status(404).send('User not found');
+    })
 })
 
 //donor routes
