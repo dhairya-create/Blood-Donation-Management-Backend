@@ -81,21 +81,20 @@ router.route('/change-status/:name/:check').put((req, res) => {
 })
 
 
-router.route('/login').post((req,res)=> {
+router.route('/login').post(async(req,res)=> {
     if(!req.body.userName || !req.body.password){
         return res.status(400).send('Bad Request');
     }
     userDetails.findOne({userName: req.body.userName})
-    .then((user)=>{
-
-        console.log(req.headers)
-        bcrypt.compare(req.body.password,user.password)
-        .then((result)=>{
+    .then(async(user)=>{
+        console.log(req.body.password);
+        const result=await bcrypt.compare(req.body.password,user.password)
+        if(result){
             
             const token = jwt.sign({userName:user.userName},process.env.SECRET_KEY,{
                 expiresIn:86400
             })
-
+            console.log(result);
             user.token = token; 
 
             userDetails.updateOne({userName:user.userName},{token:token})
@@ -107,10 +106,10 @@ router.route('/login').post((req,res)=> {
                 return res.status(403).send(err);
             })
 
-        })
-        .catch((err)=>{
+        }
+        else{
             return res.status(401).send('Incorrect Password');
-        })
+        }
     })
     .catch((err)=>{
         console.log(err);
@@ -158,12 +157,15 @@ router.route('/donor-all').get((req, res) => {
 router.route('/donation-add').post((req, res) => {
    
     console.log(req.body.appointmentDate);
+    console.log(req.body.username)
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
         .then(() => {
             console.log("added");
         })
-        .catch(err => res.status(400).json("error:" + err));
+        .catch((err) =>{ 
+            console.log(err);
+            res.status(400).json("error:" + err)});
 });
 
 router.route('/donated/:id').put((req,res)=>{
@@ -193,6 +195,7 @@ router.route('/total-donations').get((req, res) => {
 });
 
 router.route('/monthly-donations').get((req, res) => {
+    console.log("mmodo")
     const arr = [];
     const curr_year = new Date().getFullYear();
     donationDetails.aggregate([
@@ -202,13 +205,13 @@ router.route('/monthly-donations').get((req, res) => {
                 'hasDonated': true,
             }
         },
-        { $group: { _id: { year: { $year: "$date" }, month: { $month: "$date" } }, total: { $sum: "$amount" } } }
+        { $group: { _id: { year: { $year: "$date" }, month: { $month: "$date" } }, count:{$sum:1} } }
     ])
         .then((result) => {
             console.log(result);
             result.forEach(obj => {
                 if (obj._id.year == curr_year) {
-                    arr[obj._id.month] = obj.total;
+                    arr[obj._id.month] = obj.count;
                 }
             })
             for (let i = 1; i <= 12; i++) {
@@ -217,7 +220,7 @@ router.route('/monthly-donations').get((req, res) => {
                 }
                 console.log(arr[i]);
             }
-            //res.json(arr);
+            res.json(arr);
         })
         .catch((err) => {
             console.log("error " + err)
