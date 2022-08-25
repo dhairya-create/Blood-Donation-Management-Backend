@@ -14,12 +14,6 @@ const recipientSchema = new mongoose.Schema({
         required: true,
     },
 
-    requestedDate: {
-
-        type: Date,
-        required: true
-    },
-
     quantity: {
 
         type: Number,

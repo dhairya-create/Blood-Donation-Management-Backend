@@ -36,8 +36,6 @@ app.get("/",(req,res)=>{
   res.send("hello world");
 })
 
-const supervisor = require('./routes/supervisor');
-app.use('/supervisor',supervisor);
 
 const user = require('./routes/user');
 app.use('/user',user);

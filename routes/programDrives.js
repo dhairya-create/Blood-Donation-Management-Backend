@@ -2,7 +2,6 @@ const router = require('express').Router();
 const programDrives = require('../models/programDrives.model');
 const userDetails = require('../models/user.model');
 const mail = require('nodemailer');
-const supervisor = require('../models/supervisorDetails.model');
 const mongoose = require('mongoose');
 
 let transporter = mail.createTransport({
@@ -21,10 +20,14 @@ transporter.verify((err, success) => {
 })
 
 
-router.route('/add').post((req, res) => {
+router.route('/add').post(async(req, res) => {
+    const drive = await programDrives.findOne({ isAccepted:true, programDate:req.body.programDate});
+    if(drive){
+        return res.status(400).json("Program date already booked!");
+    }
     const newDrive = new programDrives(req.body);
     newDrive.save()
-        .then(() => res.json("Drive added"))
+        .then(() => res.status(200).json("Drive added"))
         .catch(err => res.status(400).json("error:" + err));
 });
 
@@ -48,6 +51,8 @@ router.route('/program-find').post((req, res) => {
 });
 
 router.route('/reject/:id').get((req, res) => {
+    console.log(req.params.id);
+
     programDrives.findOne({ _id: req.params.id })
         .then((result) => {
             console.log(result.username)
@@ -134,7 +139,7 @@ router.route('/accept/:id').get((req, res) => {
 });
 
 router.route('/latest-drive').get((req, res) => {
-    programDrives.find().sort({programDate:-1}).limit(1)
+    programDrives.find({isAccepted:true}).sort({programDate:1}).limit(1)
     .then((result) => {
         console.log(result[0]);
         res.json(result[0]);
@@ -142,4 +147,12 @@ router.route('/latest-drive').get((req, res) => {
     .catch((err) => {console.log(err)})
 });
 
+router.route('/upcomming-drive').get((req, res) => {
+    programDrives.find({isAccepted:true}).sort({programDate:1})
+    .then((result) => {
+        console.log(result);
+        res.json(result);
+    })
+    .catch((err) => {console.log(err)})
+});
 module.exports = router;
