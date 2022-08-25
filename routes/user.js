@@ -492,6 +492,14 @@ router.route('/d_register').post(async (req, res) => {
     
 });
 
+router.route('/r_register').post(async (req, res) => {
+    console.log(req.body);
+    const newUser = new recipientDetails(req.body);
+    newUser.save()
+        .then(() => res.json("Blood Request added"))
+        .catch(err => res.status(400).json("error:"+err));
+});
+
 // router.route('/verify-account/:token/:userName').get( async (req, res) => {
 //     const token = await Token.findOne({ token : req.params.token })
 //     if(token)

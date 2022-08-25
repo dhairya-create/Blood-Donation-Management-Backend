@@ -14,6 +14,10 @@ const programDrivesSchema = new mongoose.Schema({
         required: true
     },
 
+    supervisorName:{
+        type: String,
+        required: true
+    },
     contactNumber: {
 
         type: String,
