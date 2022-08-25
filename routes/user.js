@@ -154,14 +154,38 @@ router.route('/donor-all').get((req, res) => {
 });
 
 //donation routes
-router.route('/donation-add').post((req, res) => {
+router.route('/donation-add').post(async(req, res) => {
    
     console.log(req.body.appointmentDate);
+    const arr=await donationDetails.find({username:req.body.username}).sort({date:-1});
+    if(arr[0]){
+        let date=(arr[0].date).toISOString();
+        let curr=req.body.appointmentDate;
+        // curr=curr.toISOString();
+        console.log(date+" "+curr);
+        console.log(date.substr(0,10)+" "+curr.substr(0,10)); 
+        const date1 = new Date(date);
+        const date2 = new Date(curr);
+
+        // One day in milliseconds
+        const oneDay = 1000 * 60 * 60 * 24;
+
+        // Calculating the time difference between two dates
+        const diffInTime = date2.getTime() - date1.getTime();
+
+        // Calculating the no. of days between two dates
+        const diffInDays = Math.round(diffInTime / oneDay);
+
+        console.log(Math.abs(diffInDays));
+        if(Math.abs(diffInDays)<90)
+            return res.status(400).json("Yor already donated within 90 days.")
+    }
     console.log(req.body.username)
     const newDonation = new donationDetails({ username: req.body.username, date: req.body.appointmentDate });
     newDonation.save()
         .then(() => {
             console.log("added");
+            res.status(200).json("Booked")
         })
         .catch((err) =>{ 
             console.log(err);
