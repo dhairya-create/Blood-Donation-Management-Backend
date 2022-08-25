@@ -33,7 +33,7 @@ router.route('/stock-count').get((req, res) => {
     let arr = [];
     prerequesites.find({
         $expr: {
-            "$lt": ["$quantity",10]
+            "$lt": ["$quantity",20]
         }
     })
         .then((result) => {
